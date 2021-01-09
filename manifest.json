@@ -4,7 +4,7 @@
     "description": "Build an Extension to save Linkedin messages!",
     "background": {
         "scripts": [
-            "jquery-3.5.1.min.js",
+            
             "background.js"
         ],
         "persistent": false
@@ -16,7 +16,7 @@
                 "https://www.linkedin.com/feed/"
             ],
             "js": [
-                "jquery-3.5.1.min.js",
+            
                 "message_page.js",
                 "main_page.js"
             ]
