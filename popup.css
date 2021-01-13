@@ -6,7 +6,8 @@
 .outer_box{
     width: 400px;
     /* height: 400px; */
-    background-color: #f8f8ff;
+    /* background-color: #f8f8ff; */
+    background-color: lightyellow;
     padding: 3px 5px 3px 5px;
 }
 .header{
@@ -75,14 +76,12 @@
     margin-top: 6px;
     margin-bottom: 11px;
     background-color: lightgrey;
+    border-radius: 5px;
   }
   
   .full_logo{
       display: flex;
       justify-content: space-around;
-      /* margin-top: 1px; */
-      /* margin-bottom: 8px; */
-      /* vertical-align: middle; */
       font-size: 28px;
       font-weight: 700;
   }
@@ -97,5 +96,40 @@
       margin-bottom: 8px;
   }
 
-  
+.msg-body{
+    border-top: 1px solid lightgrey;
+    cursor: pointer;
+    padding-top: 2px;
+    padding-bottom: 4px;
+}  
+
+.edit-icon{
+    cursor: pointer;
+}
+
+button{
+    cursor: pointer;
+    margin-right: 10px;
+    width: 70px;
+    max-width: 70px;
+    max-height: 30px;
+    background-color: lightseagreen;
+    border: 1px solid lightyellow;
+    border-radius: 10px;
+}
+
+.msg-extra-text{
+    border-top: 1px solid lightgrey;
+    word-break: break-all;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 5px;
+    padding-top: 10px;
+}
+
+textarea{
+    width: 250px;
+    max-width: 250px;
+    border-radius: 5px;
+}
 

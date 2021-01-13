@@ -65,10 +65,33 @@ function extract_date_of_sending_message(dup_list_node) {
     return final_date_of_message;
 }
 
-function everything() {
+function extract_thread_link(link_element) {
+    let full_value = link_element.getAttribute("data-event-urn");
+    full_value = full_value.slice(17, -1);
+    let thread = full_value.split(",", 1)[0];
+    return thread;
+}
+
+function extract_list_number(dup_list_node) {
+    let unordered_list = dup_list_node.parentNode.childNodes;
+    let cnt = 0, ans = -1;
+    Array.from(unordered_list, function (curr) {
+        if (curr === dup_list_node)
+            ans = cnt;
+        if (curr.tagName === "LI") {
+            ++cnt;
+        }
+
+    })
+    return ans;
+}
+
+function everything(fulldb) {
     setTimeout(() => {
+        // console.log("mei aa chuka hhu");
+
         let ele = document.querySelectorAll(".msg-s-event-listitem__message-bubble.msg-s-event-listitem__message-bubble--msg-fwd-enabled");
-        // if(ele!=null)
+
         Array.from(ele, function (curr) {
             curr.addEventListener("mouseover", () => {
                 setTimeout(() => {
@@ -82,57 +105,71 @@ function everything() {
                         let name = "", time_of_message = "";
                         [name, time_of_message] = extract_name_and_timing_of_message(list_node);
                         let final_date_of_message = extract_date_of_sending_message(list_node);
-                        let all_messages = [];
-                        chrome.storage.sync.get({ 'all_messages': [] }, function (result) {
-                            all_messages = result.all_messages;
 
-                            let flag = 0;
-                            for (let temp = 0; temp < all_messages.length; ++temp) {
-                                if (all_messages[temp].name == name && all_messages[temp].text == final_text && all_messages[temp].time_of_message == time_of_message && all_messages[temp].date_of_message == final_date_of_message) {
-                                    flag = 1;
-                                    break;
+                        let flag = 0;
+
+                        for (let ind = 0; ind < fulldb.length; ++ind) {
+                            if (fulldb[ind].name == name && fulldb[ind].text == final_text && fulldb[ind].time_of_message == time_of_message && fulldb[ind].date_of_message == final_date_of_message) {
+                                flag = 1;
+                                break;
+                            }
+                        }
+
+                        let emoji_list = document.getElementsByClassName("emoji-popular-list__item");
+                        if (emoji_list.length == 5) {
+
+                            let list_ele = document.createElement("LI");
+                            list_ele.setAttribute("role", "menuitem");
+
+                            let div_ele = document.createElement("DIV");
+                            div_ele.setAttribute("aria-label", "React with saving items");
+                            div_ele.setAttribute("class", "emoji-popular-list__item");
+                            div_ele.setAttribute("tabindex", "0");
+                            div_ele.setAttribute("title", "save message");
+
+                            let span_ele = document.createElement("SPAN");
+                            span_ele.setAttribute("class", "emoji-popular-list__item-emoji");
+
+                            if (flag == 0)
+                                span_ele.innerHTML = "⛤";
+                            else
+                                span_ele.innerHTML = "⭐";
+                            div_ele.appendChild(span_ele);
+                            list_ele.appendChild(div_ele);
+                            document.getElementsByClassName("emoji-popular-list__container")[0].appendChild(list_ele);
+                        }
+                        let list_ele = document.getElementsByClassName("emoji-popular-list__container");
+
+                        if (list_ele != undefined && list_ele != null && list_ele[0] != undefined) {
+                            let list_ele_0 = list_ele[0].lastElementChild;
+                            if (list_ele_0 != undefined) {
+                                list_ele_0.onclick = function () {
+                                    if (flag == 0) {
+                                        let save = "⭐";
+                                        list_ele_0.getElementsByTagName("div")[0].getElementsByTagName("span")[0].innerHTML = save;
+
+                                        let message_thread = extract_thread_link(hover_ke_baad_wala_div.parentNode.parentNode);
+                                        let list_number = extract_list_number(list_node);
+                                        let new_message = {
+                                            "name": name,
+                                            "text": final_text,
+                                            "time_of_message": time_of_message,
+                                            "date_of_message": final_date_of_message,
+                                            "message_thread": message_thread,
+                                            "list_number": list_number,
+                                            "extra_text": ""
+                                        };
+
+                                        chrome.runtime.sendMessage({
+                                            type: "add",
+                                            new_message: new_message
+                                        });
+                                        // let objStore = db.transaction("MessagesInformation", "readwrite").objectStore("MessagesInformation");
+                                        // objStore.add(new_message);
+                                    }
                                 }
                             }
-                            let emoji_list = document.getElementsByClassName("emoji-popular-list__item");
-                            if (emoji_list.length == 5) {
-
-                                let list_ele = document.createElement("LI");
-                                list_ele.setAttribute("role", "menuitem");
-
-                                let div_ele = document.createElement("DIV");
-                                div_ele.setAttribute("aria-label", "React with saving items");
-                                div_ele.setAttribute("class", "emoji-popular-list__item");
-                                div_ele.setAttribute("tabindex", "0");
-                                div_ele.setAttribute("title", "save message");
-
-                                let span_ele = document.createElement("SPAN");
-                                span_ele.setAttribute("class", "emoji-popular-list__item-emoji");
-
-                                if (flag == 0)
-                                    span_ele.innerHTML = "⛤";
-                                else
-                                    span_ele.innerHTML = "⭐";
-                                div_ele.appendChild(span_ele);
-                                list_ele.appendChild(div_ele);
-                                document.getElementsByClassName("emoji-popular-list__container")[0].appendChild(list_ele);
-                            }
-
-                            let list_ele = document.getElementsByClassName("emoji-popular-list__container")[0].lastElementChild;
-                            list_ele.onclick = function () {
-                                if (flag == 0) {
-                                    let save = "⭐";
-                                    list_ele.getElementsByTagName("div")[0].getElementsByTagName("span")[0].innerHTML = save;
-                                    let new_message = {
-                                        "name": name,
-                                        "text": final_text,
-                                        "time_of_message": time_of_message,
-                                        "date_of_message": final_date_of_message
-                                    };
-                                    all_messages.push(new_message);
-                                    chrome.storage.sync.set({ 'all_messages': all_messages });
-                                }
-                            }
-                        });
+                        };
                     }
                 }, 500);
             })
@@ -140,6 +177,27 @@ function everything() {
     }, 700);
 }
 
-everything();
+// everything();
 
-// export {everything};
+chrome.runtime.onMessage.addListener(
+    function (message, sender, sendResponse) {
+        if (message.type === "link_transfer") {
+
+            let unordered_list = document.getElementsByClassName("msg-s-message-list-content list-style-none full-width")[0].childNodes;
+            let cnt = 0;
+            let arr = Object.values(unordered_list);
+            for (let ind = 0; ind < arr.length; ++ind) {
+                if (arr[ind].tagName === "LI" && cnt === message.list_number) {
+                    arr[ind].scrollIntoView();
+                    break;
+                }
+                if (arr[ind].tagName === "LI")
+                    ++cnt;
+            }
+        }
+        else if (message.type === "call_everything_from_message_page"){
+            // console.log("mei bhi to aa hi chuka hu");
+            everything(message.fulldb);
+        }
+    }
+);

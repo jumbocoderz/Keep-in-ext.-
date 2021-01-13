@@ -12,8 +12,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://www.linkedin.com/messaging/*",
-                "https://www.linkedin.com/feed/"
+                "<all_urls>"
             ],
             "js": [
             
@@ -31,8 +30,7 @@
         "tabs",
         "activeTab",
         "storage",
-        "https://www.linkedin.com/messaging/*",
-        "https://www.linkedin.com/feed/"
+        "https://www.linkedin.com/*"
     ],
     "manifest_version": 2
 }
