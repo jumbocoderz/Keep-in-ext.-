@@ -4,14 +4,12 @@
 }
 
 .outer_box{
-    width: 400px;
-    /* height: 400px; */
-    /* background-color: #f8f8ff; */
-    background-color: lightyellow;
+    width: 500px;
+    background-color: #FAFAFA;
     padding: 3px 5px 3px 5px;
 }
+
 .header{
-    /* width: 70%; */
     display: flex;
     justify-content: space-between;
     height: 55px;
@@ -37,7 +35,8 @@
 
 .msg{
     margin: 5px 5px 5px 5px;
-    background-color: #FAFAFA;
+    /* background-color: #FAFAFA; */
+    background-color: lightyellow;
     border: 1px solid lightgrey;
     border-radius: 10px;
     padding: 4px;
@@ -46,11 +45,13 @@
 .msg:hover{
     border: 2px solid lightgrey;
 }
+
 .msg-heading{
     display: flex;
     justify-content: space-between;
     padding-right: 5px;
     margin-bottom: 3px;
+    font-family: 'Potta One', cursive;
 }
 
 .close{
@@ -69,7 +70,7 @@
     /* background-image: url('zoom-to-actual-size.png'); */
     /* background-position: 10px 12px; */
     background-repeat: no-repeat;
-    width: 190px;
+    width: 220px;
     font-size: 12px;
     padding: 3px 7px 3px 7px;
     border: 1px solid #ddd;
@@ -89,6 +90,7 @@
   .keep{
       color: #0b8dbc;
       padding-top: 7px;
+      font-family: 'Potta One', cursive;  
   }
 
   .inlogo{
@@ -101,10 +103,12 @@
     cursor: pointer;
     padding-top: 2px;
     padding-bottom: 4px;
+    font-family: 'Kufam', cursive;
 }  
 
 .edit-icon{
     cursor: pointer;
+    margin-left: 4px;
 }
 
 button{
@@ -119,17 +123,22 @@ button{
 }
 
 .msg-extra-text{
-    border-top: 1px solid lightgrey;
+    font-family: 'Inconsolata', monospace;
     word-break: break-all;
     display: flex;
     justify-content: space-between;
     margin-left: 5px;
     padding-top: 10px;
+    color: blue;
 }
 
 textarea{
-    width: 250px;
-    max-width: 250px;
+    width: 320px;
+    max-width: 320px;
     border-radius: 5px;
+    font-family: 'Inconsolata', monospace;
 }
 
+.left-heading{
+    display: flex;
+}

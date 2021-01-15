@@ -88,10 +88,15 @@ function extract_list_number(dup_list_node) {
 
 function everything(fulldb) {
     setTimeout(() => {
-        // console.log("mei aa chuka hhu");
 
         let ele = document.querySelectorAll(".msg-s-event-listitem__message-bubble.msg-s-event-listitem__message-bubble--msg-fwd-enabled");
+        let u_list = document.getElementsByClassName("msg-s-message-list-content list-style-none full-width")[0];
 
+        let observer = new MutationObserver((mutations) => {
+            everything(fulldb);
+        });
+        observer.observe(u_list, { childList: true });
+        
         Array.from(ele, function (curr) {
             curr.addEventListener("mouseover", () => {
                 setTimeout(() => {
@@ -114,7 +119,6 @@ function everything(fulldb) {
                                 break;
                             }
                         }
-
                         let emoji_list = document.getElementsByClassName("emoji-popular-list__item");
                         if (emoji_list.length == 5) {
 
@@ -139,7 +143,9 @@ function everything(fulldb) {
                             document.getElementsByClassName("emoji-popular-list__container")[0].appendChild(list_ele);
                         }
                         let list_ele = document.getElementsByClassName("emoji-popular-list__container");
-
+                        if(flag===1){
+                            document.getElementsByClassName("emoji-popular-list__container")[0].lastElementChild.getElementsByTagName("div")[0].getElementsByTagName("span")[0].innerHTML = "⭐";
+                        }
                         if (list_ele != undefined && list_ele != null && list_ele[0] != undefined) {
                             let list_ele_0 = list_ele[0].lastElementChild;
                             if (list_ele_0 != undefined) {
@@ -160,12 +166,12 @@ function everything(fulldb) {
                                             "extra_text": ""
                                         };
 
+                                        fulldb.push(new_message);
                                         chrome.runtime.sendMessage({
                                             type: "add",
-                                            new_message: new_message
+                                            new_message: new_message,
+                                            fulldb: fulldb
                                         });
-                                        // let objStore = db.transaction("MessagesInformation", "readwrite").objectStore("MessagesInformation");
-                                        // objStore.add(new_message);
                                     }
                                 }
                             }
@@ -176,8 +182,6 @@ function everything(fulldb) {
         })
     }, 700);
 }
-
-// everything();
 
 chrome.runtime.onMessage.addListener(
     function (message, sender, sendResponse) {
@@ -194,10 +198,6 @@ chrome.runtime.onMessage.addListener(
                 if (arr[ind].tagName === "LI")
                     ++cnt;
             }
-        }
-        else if (message.type === "call_everything_from_message_page"){
-            // console.log("mei bhi to aa hi chuka hu");
-            everything(message.fulldb);
         }
     }
 );

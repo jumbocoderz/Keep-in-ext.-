@@ -7,7 +7,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 })
 
 
-
 chrome.runtime.onMessage.addListener((message, sender) => {
 
     if (message.type === "send_data_to_pop_up") {
@@ -16,20 +15,24 @@ chrome.runtime.onMessage.addListener((message, sender) => {
         let fulldb = message.fulldb;
         for (let ind = fulldb.length - 1; ind >= 0; --ind) {
             let curr = fulldb[ind];
+
             let msg = document.createElement("DIV");
             msg.setAttribute("class", "msg");
+            
             let msg_heading = document.createElement("DIV");
             msg_heading.setAttribute("class", "msg-heading");
+            
+            let left_heading = document.createElement("DIV");
+            left_heading.setAttribute("class", "left-heading");
             let name_and_time = document.createElement("DIV");
             name_and_time.setAttribute("class", "name-and-time");
-            let temp_name = curr.name.bold();
-            name_and_time.innerHTML = temp_name + " " + curr.date_of_message + " at " + curr.time_of_message;
-            msg_heading.appendChild(name_and_time);
-
+            name_and_time.innerHTML = curr.name + " " + curr.date_of_message + " at " + curr.time_of_message;
             let edit_icon = document.createElement("DIV");
             edit_icon.setAttribute("class","edit-icon");
             edit_icon.innerHTML = "📝"; 
-            msg_heading.appendChild(edit_icon);
+            left_heading.appendChild(name_and_time);
+            left_heading.appendChild(edit_icon);
+            msg_heading.appendChild(left_heading);
 
             let close = document.createElement("DIV");
             close.setAttribute("class", "close");
@@ -48,7 +51,10 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
             let msg_body = document.createElement("DIV");
             msg_body.setAttribute("class", "msg-body");
-            msg_body.innerHTML = curr.text;
+            if(curr.text.length>210)
+                msg_body.innerHTML = curr.text.slice(0,210) + "...";
+            else
+                msg_body.innerHTML = curr.text;
             msg.appendChild(msg_body);
 
             let msg_extra_text = document.createElement("div");
@@ -63,13 +69,13 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
             edit_icon.onclick = () => {
                 msg_extra_text.style.display = "";
-                msg_extra_text.innerHTML = "";
                 let text_area = document.createElement("TEXTAREA");
+                text_area.value = msg_extra_text.innerHTML;
+                msg_extra_text.innerHTML = "";
                 let save_button = document.createElement("BUTTON");
                 save_button.innerHTML = "Save";
                 msg_extra_text.appendChild(text_area);
                 msg_extra_text.appendChild(save_button);
-                text_area.value = curr.extra_text;
                 save_button.onclick = () => {
                     let final_extra_text = text_area.value; 
                     text_area.style.display = "none";
@@ -96,6 +102,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             }
 
             msg_body.onclick = () => {
+                msg_body.innerHTML = curr.text;
                 let whole_link = "https://linkedin.com/messaging/thread/" + curr.message_thread + "/";
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 
@@ -117,22 +124,30 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             len++;
         };
 
-
         setTimeout(() => {
             let search_wala = document.getElementsByTagName("input")[0];
             search_wala.onkeyup = () => {
 
                 let input = document.getElementById("myInput");
                 let filter = input.value.toUpperCase();
-
+                let all_words = filter.split(" ");
                 let name_and_time = document.getElementsByClassName("name-and-time");
+
                 Array.from(name_and_time, (curr) => {
-                    let txtValue = curr.textContent + " " + curr.parentNode.nextElementSibling.textContent + " " + curr.parentNode.nextElementSibling.nextElementSibling.textContent;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        curr.parentNode.parentNode.style.display = "";
-                    } else {
-                        curr.parentNode.parentNode.style.display = "none";
+                    let cnt = 0;
+                    Array.from(all_words, (word) => {   
+                            let txtValue = curr.textContent + " " + curr.parentNode.parentNode.nextElementSibling.textContent + " " + curr.parentNode.parentNode.nextElementSibling.nextElementSibling.textContent;
+                            if (txtValue.toUpperCase().indexOf(word) > -1) {
+                                ++cnt;
+                            } 
+                    })
+                    if((cnt>0 && cnt===all_words.length) || (all_words.length===1 && all_words[0]==="")){
+                        curr.parentNode.parentNode.parentNode.style.display = "";
                     }
+                    else {
+                        curr.parentNode.parentNode.parentNode.style.display = "none";
+                    }
+                    
                 })
             }
         }, 200);
