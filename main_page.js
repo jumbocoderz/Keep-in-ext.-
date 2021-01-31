@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(
                 if (ele != null && ele.length > 0) {
                     everything(message.fulldb);
                 }
-            }, 1000);
+            }, 2000);
         }
     });
 

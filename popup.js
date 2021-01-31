@@ -26,7 +26,14 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             left_heading.setAttribute("class", "left-heading");
             let name_and_time = document.createElement("DIV");
             name_and_time.setAttribute("class", "name-and-time");
-            name_and_time.innerHTML = curr.name + " " + curr.date_of_message + " at " + curr.time_of_message;
+            let name_of_sender = document.createElement("SPAN");
+            name_of_sender.setAttribute("class", "name-of-sender");
+            name_of_sender.innerHTML = curr.name + " ";
+            let timing = document.createElement("SPAN");
+            timing.setAttribute("class", "timing");
+            timing.innerHTML = curr.date_of_message + " at " + curr.time_of_message;
+            name_and_time.appendChild(name_of_sender);
+            name_and_time.appendChild(timing);
             let edit_icon = document.createElement("DIV");
             edit_icon.setAttribute("class","edit-icon");
             edit_icon.innerHTML = "📝"; 
@@ -48,13 +55,23 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             }
             msg_heading.appendChild(close);
             msg.appendChild(msg_heading);
-
+            
             let msg_body = document.createElement("DIV");
             msg_body.setAttribute("class", "msg-body");
-            if(curr.text.length>210)
-                msg_body.innerHTML = curr.text.slice(0,210) + "...";
+            let final_text = "";
+            for(let i = 0; i<curr.text.length; ++i){
+                if(curr.text[i]=="<"){
+                    while(i<curr.text.length && curr.text[i]!=">")
+                        ++i;
+                }
+                else {
+                    final_text += curr.text[i];
+                }
+            }
+            if(final_text.length>=180)
+                msg_body.innerHTML = final_text.slice(0,180) + "<span class='hyperlink'>...Read more<span>";
             else
-                msg_body.innerHTML = curr.text;
+                msg_body.innerHTML = final_text;
             msg.appendChild(msg_body);
 
             let msg_extra_text = document.createElement("div");
@@ -81,6 +98,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                     text_area.style.display = "none";
                     save_button.style.display = "none";
                     if(final_extra_text===""){
+                        msg_extra_text.innerHTML = "";
                         msg_extra_text.style.display = "none";
                     }
                     else{
@@ -102,7 +120,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             }
 
             msg_body.onclick = () => {
-                msg_body.innerHTML = curr.text;
+                msg_body.innerHTML = final_text;
                 let whole_link = "https://linkedin.com/messaging/thread/" + curr.message_thread + "/";
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 
@@ -111,7 +129,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                             chrome.tabs.sendMessage(
                                 tabs[0].id,
                                 {
-                                    list_number: curr.list_number,
+                                    text: curr.text,
                                     type: "link_transfer"
                                 });
 
@@ -154,3 +172,23 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     }
 
 });
+
+
+document.getElementsByClassName("logo")[0].onclick = () => {
+    let link = "https://github.com/jumbocoderz/Keep-in-ext.-";
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+
+        chrome.tabs.update(tabs[0].id, { active: true, url: link }, (tab) => {
+            setTimeout(() => {
+                chrome.tabs.sendMessage(
+                    tabs[0].id,
+                    {
+                        link: link,
+                        type: "keep_in_link"
+                    });
+
+            }, 4000);
+
+        })
+    });
+}
