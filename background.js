@@ -1,16 +1,3 @@
-// let db = null;
-
-// let request = indexedDB.open("KeepinExtension", 1);
-
-// request.onupgradeneeded = function (event) {
-//   db = event.target.result;
-//   let objectStore = db.createObjectStore("MessagesInformation", { autoIncrement: true });
-// };
-
-// request.onsuccess = function (event) {
-//   db = event.target.result;
-// };
-
 
 function add(db, new_message, fulldb) {
   let objStore = db.transaction("MessagesInformation", "readwrite").objectStore("MessagesInformation");

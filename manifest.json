@@ -3,8 +3,7 @@
     "version": "1.0",
     "description": "Build an Extension to save Linkedin messages!",
     "background": {
-        "scripts": [
-            
+        "scripts": [            
             "background.js"
         ],
         "persistent": false
@@ -15,15 +14,25 @@
                 "<all_urls>"
             ],
             "js": [
-            
-                "message_page.js",
-                "main_page.js"
+                "content_scripts/message_page.js",
+                "content_scripts/main_page.js"
             ]
         }
     ],
     "browser_action":{
-        "default_icon": "logo.png",
-        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/logo_16x16.png",
+            "32": "icons/logo_32x32.png",
+            "48": "icons/logo_48x48.png",
+            "128": "icons/logo_128x128.png"
+          },
+          "icons": {
+            "16": "icons/logo_16x16.png",
+            "32": "icons/logo_32x32.png",
+            "48": "icons/logo_48x48.png",
+            "128": "icons/logo_128x128.png"
+          },
+        "default_popup": "popup/popup.html",
         "deafult_title": "Keep in Messages"
     },
     "permissions": [

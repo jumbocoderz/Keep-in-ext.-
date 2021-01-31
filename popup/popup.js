@@ -123,12 +123,10 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                 msg_body.innerHTML = final_text;
                 let whole_link = "https://linkedin.com/messaging/thread/" + curr.message_thread + "/";
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-
                     chrome.tabs.update(tabs[0].id, { active: true, url: whole_link }, (tab) => {
                         setTimeout(() => {
                             chrome.tabs.sendMessage(
-                                tabs[0].id,
-                                {
+                                tabs[0].id, {
                                     text: curr.text,
                                     type: "link_transfer"
                                 });
@@ -138,13 +136,11 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                     })
                 });
             }
-
             len++;
         };
-
         setTimeout(() => {
-            let search_wala = document.getElementsByTagName("input")[0];
-            search_wala.onkeyup = () => {
+            let search_input = document.getElementsByTagName("input")[0];
+            search_input.onkeyup = () => {
 
                 let input = document.getElementById("myInput");
                 let filter = input.value.toUpperCase();
@@ -170,19 +166,16 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             }
         }, 200);
     }
-
 });
 
 
 document.getElementsByClassName("logo")[0].onclick = () => {
     let link = "https://github.com/jumbocoderz/Keep-in-ext.-";
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-
         chrome.tabs.update(tabs[0].id, { active: true, url: link }, (tab) => {
             setTimeout(() => {
                 chrome.tabs.sendMessage(
-                    tabs[0].id,
-                    {
+                    tabs[0].id,{
                         link: link,
                         type: "keep_in_link"
                     });
