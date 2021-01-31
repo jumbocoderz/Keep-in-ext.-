@@ -1,7 +1,7 @@
 {
     "name": "Keep in",
     "version": "1.0",
-    "description": "Build an Extension to save Linkedin messages!",
+    "description": "An Extension to save Linkedin messages!",
     "background": {
         "scripts": [            
             "background.js"
@@ -33,7 +33,7 @@
             "128": "icons/logo_128x128.png"
           },
         "default_popup": "popup/popup.html",
-        "deafult_title": "Keep in Messages"
+        "default_title": "Keep in Messages"
     },
     "permissions": [
         "tabs",
