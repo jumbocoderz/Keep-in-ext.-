@@ -6,7 +6,6 @@
 .outer_box{
     width: 430px;
     background-color: #FAFAFA;
-    /* padding: 3px 5px 3px 5px; */
 }
 
 .header{
@@ -52,13 +51,10 @@
 .close:hover{
     transform: scale(1.5,1.5);
     color: red;
-    /* transform: rotate(20deg); */
     cursor: pointer;
 }
 
 #myInput {
-    /* background-image: url('zoom-to-actual-size.png'); */
-    /* background-position: 10px 12px; */
     background-repeat: no-repeat;
     width: 220px;
     font-size: 16px;
